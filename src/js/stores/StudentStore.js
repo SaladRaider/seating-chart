@@ -43,13 +43,13 @@ class StudentStore extends EventEmitter {
 
 	// attempts to sort the students in a desireable fashion under a certain ammount of time
 	sortStudents(timeout) {
-
 		var initSeatingChart = new SeatingChart;
 		initSeatingChart.setStudents(this.students);
-		initSeatingChart.initSort();
-
-		this.students = initSeatingChart.getStudents();
-
+		initSeatingChart.initSort((students) => {
+			this.students = students;
+			console.log("Done sorting");
+			this.emit("change");
+		});
 	}
 
 	// returns a list of all students

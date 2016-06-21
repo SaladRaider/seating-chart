@@ -10,7 +10,7 @@ export default class SeatingChart {
 	}
 
 	// Do an initial sort
-	initSort() {
+	initSort(callBack) {
 
 		if(typeof(Worker) == undefined) {
 			console.log("Eror: Worker threads not supported");
@@ -22,6 +22,7 @@ export default class SeatingChart {
 		worker.onmessage = function(e) {
 			this.students = e.data.students;
 			console.log("Finished init sort.");
+			callBack(this.students);
 			worker.terminate();
 			worker = undefined;
 		};
