@@ -5,28 +5,7 @@ import dispatcher from "../dispatcher.js";
 class StudentStore extends EventEmitter {
 	constructor() {
 		super();
-		this.students = [
-			{
-				id: 1,
-				name: "Peter",
-				gender: "M",
-				grade: 12,
-				front: "false",
-				fourthCol: "false",
-				testScore: 75
-			},
-			{
-				id: 2,
-				name: "Hannah",
-				gender: "F",
-				grade: 11,
-				front: "false",
-				fourthCol: "true",
-				testScore: 103
-			}
-		];
-
-		
+		this.students = [];		
 	}
 
 	// creates a new student and emmits a change event
@@ -37,6 +16,7 @@ class StudentStore extends EventEmitter {
 
 	// loads new students and emits a hange event
 	loadStudents(students) {
+		this.students = [];
 		for(var i = 0; i < students.length; i++) {
 			this.makeStudent(students[i]);
 		}
@@ -46,8 +26,10 @@ class StudentStore extends EventEmitter {
 	// makes a new student
 	makeStudent({ name, gender, grade, front, fourthCol, testScore }) {
 		const id = Date.now() + this.students.length;
+		const seat = this.students.length;
 		this.students.push({
 			id,
+			seat,
 			name,
 			gender,
 			grade,

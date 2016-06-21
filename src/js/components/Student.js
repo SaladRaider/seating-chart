@@ -3,9 +3,10 @@ import { withRouter } from "react-router";
 
 export default withRouter(class Student extends React.Component {
 	render() {
-		const { name, gender, grade, front, fourthCol, testScore } = this.props;
+		const { seat, name, gender, grade, front, fourthCol, testScore } = this.props;
 		return (
 			<tr>
+				<td>{seat}</td>
 				<td>{name}</td>
 				<td>{gender}</td>
 				<td>{grade}</td>

@@ -21,21 +21,23 @@ export function deleteStudent(id) {
 	});
 }
 
-export function loadStudents(textBlob) {
-	var textLines = textBlob.split("\n");
+export function loadStudents(studentTextBlob, testScoreTextBlob) {
+	var studentTextLines = studentTextBlob.split("\n");
+	var testScoreTextLines = testScoreTextBlob.split("\n");
 	var students = [];
 
-	for(var i = 0; i < textLines.length; i++) {
-		var textProps = textLines[i].split(",");
+	for(var i = 0; i < studentTextLines.length; i++) {
+		var textProps = studentTextLines[i].split(",");
+		var textProps2 = testScoreTextLines[i + 1].split(",");
 		
 		if(textProps[1] != null) {
 			var newStudent = new Object;
 			newStudent.name = (textProps[0] != null && textProps[1] != null) ? (textProps[0].replace("\"", "") + ", " + textProps[1].replace("\"", "")) : "";
 			newStudent.gender = (textProps[2] != null) ? textProps[2] : "";
 			newStudent.grade = (textProps[3] != null) ? textProps[3] : "";
-			newStudent.front = (textProps[4] != null) ? ((textProps[4] == "yes") ? "true" : "false") : "false";
-			newStudent.fourthCol = (textProps[5] != null) ? ((textProps[5] == "yes") ? "true" : "false") : "false";
-			newStudent.testScore = (textProps[6] != null) ? textProps[6] : -1;
+			newStudent.front = (textProps[4] != null) ? ((textProps[4].indexOf("yes") != -1) ? "true" : "false") : "false";
+			newStudent.fourthCol = (textProps[5] != null) ? ((textProps[5].indexOf("yes") != -1) ? "true" : "false") : "false";
+			newStudent.testScore = (textProps2[2] != null) ? textProps2[2] : -1;
 
 			students.push(newStudent);
 		}

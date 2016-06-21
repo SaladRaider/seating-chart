@@ -30,16 +30,33 @@ export default class Students extends React.Component {
 	}
 
 	loadStudents() {
-		var fileInput = document.getElementById("fileInput");
-		var file = fileInput.files[0];
+		var studentFileInput = document.getElementById("studentFileInput");
+		var testScoreFileInput = document.getElementById("testScoreFileInput");
+		
+		if(studentFileInput.value.length <= 0 || testScoreFileInput.value.length <= 0) {
+			return;
+		}
+
+		var studentFile = studentFileInput.files[0];
+		var testScoreFile = testScoreFileInput.files[0];
+		var studentBlob = "";
+		var testScoreBlob = "";
 
 		var reader = new FileReader();
 		reader.onloadend = function(evt) {
 			if(evt.target.readyState == FileReader.DONE) {
-				StudentActions.loadStudents(evt.target.result);
+				studentBlob = evt.target.result;
+				reader.onloadend = function(evt) {
+					if(evt.target.readyState == FileReader.DONE) {
+						testScoreBlob = evt.target.result;
+						StudentActions.loadStudents(studentBlob, testScoreBlob);
+					}
+				}
+				reader.readAsText(testScoreFile);
 			}
 		}
-		reader.readAsText(file)
+
+		reader.readAsText(studentFile);
 	}
 
 	render() {
@@ -54,6 +71,7 @@ export default class Students extends React.Component {
 				<table class="table table-bordered table-hover">
 					<thead>
 						<tr>
+							<th>Seat</th>
 							<th>Name</th>
 							<th>Gender</th>
 							<th>Grade</th>
@@ -66,7 +84,9 @@ export default class Students extends React.Component {
 						{StudentComponents}
 					</tbody>
 				</table>
-				<input id="fileInput" type="file" onChange={this.loadStudents} />
+				Student .csv File: <input id="studentFileInput" type="file" /><br />
+				Test Scores .csv File: <input id="testScoreFileInput" type="file" /><br />
+				<button class="btn btn-danger" onClick={this.loadStudents}>Load Students</button>
 			</div>
 		);
 	}
