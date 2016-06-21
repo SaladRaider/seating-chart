@@ -1,4 +1,5 @@
 import { EventEmitter } from "events";
+import SeatingChart from "../classes/SeatingChart.js";
 
 import dispatcher from "../dispatcher.js";
 
@@ -17,7 +18,8 @@ class StudentStore extends EventEmitter {
 	// loads new students and emits a hange event
 	loadStudents(students) {
 		this.students = [];
-		for(var i = 0; i < students.length; i++) {
+		var sl = students.length;
+		for(var i = 0; i < sl; i++) {
 			this.makeStudent(students[i]);
 		}
 		this.emit("change");
@@ -39,6 +41,17 @@ class StudentStore extends EventEmitter {
 		});
 	}
 
+	// attempts to sort the students in a desireable fashion under a certain ammount of time
+	sortStudents(timeout) {
+
+		var initSeatingChart = new SeatingChart;
+		initSeatingChart.setStudents(this.students);
+		initSeatingChart.initSort();
+
+		this.students = initSeatingChart.getStudents();
+
+	}
+
 	// returns a list of all students
 	getAll() {
 		return this.students;
@@ -49,9 +62,15 @@ class StudentStore extends EventEmitter {
 		switch(action.type) {
 			case "CREATE_STUDENT": {
 				this.createStudent(action.student);
+				break;
 			}
 			case "LOAD_STUDENTS": {
 				this.loadStudents(action.students);
+				break;
+			}
+			case "SORT_STUDENTS": {
+				this.sortStudents(action.timeout);
+				break;
 			}
 		}
 	}
@@ -60,6 +79,5 @@ class StudentStore extends EventEmitter {
 const studentStore = new StudentStore;
 dispatcher.register(studentStore.handleActions.bind(studentStore));
 window.dispatcher = dispatcher;
-window.bobAction = {type: "CREATE_STUDENT", student: {name: "bob", gender: "M", grade: 11, front: "false", fourthCol: "false", testScore: 123}};
 export default studentStore;
 

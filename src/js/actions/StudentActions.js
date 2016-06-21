@@ -21,12 +21,19 @@ export function deleteStudent(id) {
 	});
 }
 
+export function sortStudnets() {
+	dispatcher.dispatch({
+		type: "SORT_STUDENTS"
+	});
+}
+
 export function loadStudents(studentTextBlob, testScoreTextBlob) {
 	var studentTextLines = studentTextBlob.split("\n");
 	var testScoreTextLines = testScoreTextBlob.split("\n");
 	var students = [];
 
-	for(var i = 0; i < studentTextLines.length; i++) {
+	var sll = studentTextLines.length;
+	for(var i = 0; i < sll; i++) {
 		var textProps = studentTextLines[i].split(",");
 		var textProps2 = testScoreTextLines[i + 1].split(",");
 		
