@@ -61,7 +61,23 @@ export default class SeatingChart {
 		};
 
 		// start worker
-		worker.postMessage({cmd: "GENETIC_SORT", students: this.students.splice(0), timeout: timeout});
+		worker.postMessage({
+			cmd: "GENETIC_SORT", 
+			students: this.students.splice(0), 
+			geneticInfo: {
+				populationSize: 100,
+				numMutations: 5,
+				weights: [
+					10000,
+					100,
+					1000,
+					4,
+					10,
+					1
+				]
+			},
+			timeout: timeout
+		});
 		console.log("Started genetic sort worker");
 	}
 

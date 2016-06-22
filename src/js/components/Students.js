@@ -85,9 +85,16 @@ export default class Students extends React.Component {
 						{StudentComponents}
 					</tbody>
 				</table>
-				Student .csv File: <input id="studentFileInput" type="file" /><br />
-				Test Scores .csv File: <input id="testScoreFileInput" type="file" /><br />
-				<button class="btn btn-danger" onClick={this.loadStudents}>Load Students</button>
+				<div class="form-group">
+				Student .csv File: <input class="form-control" id="studentFileInput" type="file" /><br />
+				Test Scores .csv File: <input class="form-control" id="testScoreFileInput" type="file" /><br />
+				<button class="btn btn-danger" onClick={this.loadStudents}>Load Students</button><br />
+				</div>
+				<br />
+				<div class="form-group">
+				<input type="text" class="form-control" /><br />
+				<button class="btn btn-danger" onClick={this.loadStudents}>Sort Students</button>
+				</div>
 			</div>
 		);
 	}

@@ -71,11 +71,9 @@ function comparator(a, b) {
 
 // GENETIC SORT
 
-function geneticSort(students, timeout) {
+function geneticSort(students, geneticInfo, timeout) {
 	// create new population from seed
 	var population = [];
-	const numNewChildren = 100,
-	numMutations = 10;
 	var highestScore = 0;
 	var mostFit = 0;
 	var score = 0;
@@ -89,9 +87,9 @@ function geneticSort(students, timeout) {
 		population = undefined;
 		mostFit = 0;
 
-		population = populate(seed, numMutations, numNewChildren);
-		for(var i = 0; i < numNewChildren; i++) {
-			score = calculateScore(population[i]);
+		population = populate(seed, geneticInfo);
+		for(var i = 0; i < geneticInfo.populationSize; i++) {
+			score = calculateScore(population[i], geneticInfo);
 			if(score > highestScore) {
 				highestScore = score;
 				mostFit = i;
@@ -105,25 +103,25 @@ function geneticSort(students, timeout) {
 	self.postMessage({students: seed});
 }
 
-function populate(students, numMutations, num) {
+function populate(students, geneticInfo) {
 	var population = [];
 	population.push(students);
-	for(var i = 0; i < num - 1; i+=1) {
-		population.push(createChild(students, numMutations));
+	for(var i = 0; i < geneticInfo.populationSize - 1; i+=1) {
+		population.push(createChild(students, geneticInfo));
 	}
 
 	return population;
 }
 
-function createChild(students, numMutations) {
+function createChild(students, geneticInfo) {
 	var newChild = students.slice(0);
-	mutate(newChild, numMutations);
+	mutate(newChild, geneticInfo);
 	return newChild;
 }
 
-function mutate(students, numMutations) {
+function mutate(students, geneticInfo) {
 	var rand1, rand2, temp, sl = students.length;
-	for(var i = 0; i < numMutations; i++) {
+	for(var i = 0; i < geneticInfo.numMutations; i++) {
 		rand1 = Math.floor(Math.random() * sl);
 		rand2 = Math.floor(Math.random() * sl);
 		swapStudent(students, rand1, rand2);
@@ -136,10 +134,13 @@ function swapStudent(students, s1, s2) {
 	students[s2] = temp;
 }
 
-function calculateScore(students) {
-	var sl = students.length;
+function calculateScore(students, geneticInfo) {
 
-	var score = 0; // Math.floor(Math.random() * 100);
+	var sl = students.length;
+	if(students[0] == undefined)
+		return 0;
+
+	var score = 0;
 
 	/*
 	1. request by student to sit in front
@@ -150,14 +151,7 @@ function calculateScore(students) {
 	6. students don’t sit in column 4 twice
 	*/
 	
-	const weights = [
-		10000,	// 0. request by student to sit in front
-		1000,	// 1. high test scores with low test scores
-		100,	// 2. boy/girl ratio in seating group
-		4,		// 3. sitting with new people
-		10,		// 4. low test scores in front of class  {lower priority since high test will sit with low test}
-		1		// 5. students don’t sit in column 4 twice
-	];
+	const weights = geneticInfo.weights; 
 
 	// calculate rule 1. score
 	for(var i = 0; i < 6 && i < sl; i+=1) {
@@ -174,8 +168,8 @@ function calculateScore(students) {
 	// calculate rule 2. score (high score with low score)
 	
 	// find min and max scores
-	var min = students[0].testScore;
-	var max = students[0].testScore;
+	var min = (isNaN(students[0].testScore)) ? 0 : parseInt(students[0].testScore);
+	var max = min;
 	var cmpScore = 0;
 
 	for(var i = 1; i < sl; i+=1) {
@@ -194,7 +188,7 @@ function calculateScore(students) {
 	// check neighbors
 	var maxScoreDiff = max - min;
 	var cmpScore2 = 0;
-	for(var i = 0; i < 12 && i + 1 < sl; i+=2) {
+	for(var i = 0; i + 1 < sl; i+=2) {
 		if(isNaN(students[i].testScore))
 			cmpScore = 0;
 		else
@@ -205,7 +199,7 @@ function calculateScore(students) {
 		else
 			cmpScore2 = parseInt(students[i+1].testScore);
 
-		score += (Math.abs(cmpScore - cmpScore2) / maxScoreDiff) * weights[1];
+		score += Math.pow(Math.abs(cmpScore - cmpScore2) / maxScoreDiff, 2) * weights[1];
 	}
 
 	// calculate rule 3. score (boy/girl ratio()
@@ -216,13 +210,23 @@ function calculateScore(students) {
 	}
 
 	// calculate rule 5. score (low scores sit in front)
+	var scoreBottomPerc;
 	for(var j = 0; j * 6 < sl; j+=1) {
 		for(var i = j*6; i < (j+1)*6 && i < sl; i+=1) {
 			if(isNaN(students[i].testScore))
 				cmpScore = 0;
 			else
 				cmpScore = parseInt(students[i].testScore);
-			score += ((maxScoreDiff - (cmpScore - min)) / maxScoreDiff) * weights[4] / (j+1);
+
+			scoreBottomPerc = (maxScoreDiff - (cmpScore - min)) / maxScoreDiff;
+
+			// only score the bottom 40%
+			if(scoreBottomPerc > 0.60) {
+				if(j < 3)
+					score += (Math.pow(scoreBottomPerc, 2) * weights[4] / (j+1));
+				else
+					score -= (Math.pow(scoreBottomPerc, 2) * weights[4] / (6 - j));
+			}
 		}
 	}
 
@@ -236,7 +240,7 @@ self.onmessage = function(e) {
 			break;
 		}
 		case "GENETIC_SORT": {
-			geneticSort(e.data.students, e.data.timeout);
+			geneticSort(e.data.students, e.data.geneticInfo, e.data.timeout);
 			break;
 		}
 	}
