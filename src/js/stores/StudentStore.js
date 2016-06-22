@@ -60,34 +60,35 @@ class StudentStore extends EventEmitter {
 
 		// create new population from seed
 		var population = [];
-		const numNewChildren = 10,
-		numMutations = 1;
+		const numNewChildren = 100,
+		numMutations = 10;
 		var highestScore = 0;
 		var mostFit = 0;
 		var score = 0;
 		var startTime = Date.now();
+		var seed = seatingChartSeed.getStudents();
 
 		// loop genetic simulation until timeout
 		while(Date.now() - startTime < timeout) {
 
 			// initialize population
-			population = [];
-			highestScore = 0;
+			population = undefined;
 			mostFit = 0;
 
-			seatingChartSeed.populate(population, numMutations, numNewChildren);
+			population = seatingChartSeed.populate(seed, numMutations, numNewChildren);
 			for(var i = 0; i < numNewChildren; i++) {
-				score = population[i].calculateScore();
+				score = seatingChartSeed.calculateScore(population[i]);
 				if(score > highestScore) {
 					highestScore = score;
 					mostFit = i;
+					console.log("highestScore: " + score);
 				}
 			}
 
-			seatingChartSeed = population[mostFit];
+			seed = population[mostFit];
 		}
 
-		this.students = seatingChartSeed.getStudents();
+		this.students = seed;
 		this.emit("change");
 		console.log("Done with genetic sort");
 	}
