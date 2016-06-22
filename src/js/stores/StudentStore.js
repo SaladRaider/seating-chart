@@ -42,14 +42,14 @@ class StudentStore extends EventEmitter {
 	}
 
 	// attempts to sort the students in a desireable fashion under a certain ammount of time
-	sortStudents(timeout) {
+	sortStudents(timeout, geneticInfo) {
 		var initSeatingChart = new SeatingChart;
 		initSeatingChart.setStudents(this.students);
 		initSeatingChart.initSort((students) => {
 			this.students = students;
 
 			// start genetic algorithm sort
-			initSeatingChart.geneticSort(timeout, (students) => {
+			initSeatingChart.geneticSort(timeout, geneticInfo, (students) => {
 				this.students = students;
 
 				console.log("Done with genetic sort");
@@ -116,7 +116,7 @@ class StudentStore extends EventEmitter {
 				break;
 			}
 			case "SORT_STUDENTS": {
-				this.sortStudents(action.timeout);
+				this.sortStudents(action.timeout, action.geneticInfo);
 				break;
 			}
 		}

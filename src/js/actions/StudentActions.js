@@ -55,3 +55,14 @@ export function loadStudents(studentTextBlob, testScoreTextBlob) {
 		students
 	});
 }
+
+export function sortStudents(timeout, geneticInfo) {
+	console.log("sorting students with parameters: ", timeout, ", ", geneticInfo);
+	dispatcher.dispatch({
+		type: "SORT_STUDENTS",
+		geneticInfo: geneticInfo,
+		timeout: timeout
+	});
+}
+
+

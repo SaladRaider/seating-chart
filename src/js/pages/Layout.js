@@ -6,12 +6,10 @@ export default withRouter(class Layout extends React.Component {
 		return (
 			<div class="container">
 				<div class="row">
-					<div class="col-xs-12">
-						<h1>Ms. Kuso's Seating Chart</h1>
-						<Link class="btn btn-success" to="/">Home</Link>
-						<Link class="btn btn-success" to="help">Help</Link>
-						{this.props.children}
-					</div>
+					<h1>Ms. Kuso's Seating Chart</h1>
+					<Link class="btn btn-success" to="/">Home</Link>
+					<Link class="btn btn-success" to="help">Help</Link>
+					{this.props.children}
 				</div>
 			</div>
 		);

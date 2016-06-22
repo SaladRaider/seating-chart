@@ -7,7 +7,7 @@ export default class SeatingChart {
 
 	// Set the student values
 	setStudents(students) {
-		this.students = students;
+		this.students = students.splice(0);
 	}
 
 	// Do an initial sort
@@ -22,7 +22,7 @@ export default class SeatingChart {
 		worker.onmessage = function(e) {
 			this.students = e.data.students;
 			console.log("Finished init sort.");
-			callBack(this.students);
+			callBack(this.students.splice(0));
 			worker.terminate();
 			worker = undefined;
 		};
@@ -38,7 +38,7 @@ export default class SeatingChart {
 		console.log("Init sort worker finished");
 	}
 
-	geneticSort(timeout, callBack) {
+	geneticSort(timeout, geneticInfo, callBack) {
 		if(typeof(Worker) == undefined) {
 			console.log("Eror: Worker threads not supported");
 			return;
@@ -64,18 +64,7 @@ export default class SeatingChart {
 		worker.postMessage({
 			cmd: "GENETIC_SORT", 
 			students: this.students.splice(0), 
-			geneticInfo: {
-				populationSize: 100,
-				numMutations: 5,
-				weights: [
-					10000,
-					100,
-					1000,
-					4,
-					10,
-					1
-				]
-			},
+			geneticInfo: geneticInfo,
 			timeout: timeout
 		});
 		console.log("Started genetic sort worker");
