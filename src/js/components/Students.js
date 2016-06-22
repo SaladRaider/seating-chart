@@ -62,8 +62,8 @@ export default class Students extends React.Component {
 	render() {
 		const { students } = this.state;
 
-		const StudentComponents = students.map((student) => {
-			return <Student key={student.id} {...student} />;
+		const StudentComponents = students.map((student, i) => {
+			return <Student key={student.id} num={i} {...student} />;
 		});
 
 		return (
@@ -71,6 +71,7 @@ export default class Students extends React.Component {
 				<table class="table table-bordered table-hover">
 					<thead>
 						<tr>
+							<th>Index</th>
 							<th>Seat</th>
 							<th>Name</th>
 							<th>Gender</th>

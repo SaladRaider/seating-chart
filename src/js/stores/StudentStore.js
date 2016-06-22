@@ -47,9 +47,49 @@ class StudentStore extends EventEmitter {
 		initSeatingChart.setStudents(this.students);
 		initSeatingChart.initSort((students) => {
 			this.students = students;
-			console.log("Done sorting");
+
+			// start genetic algorithm sort
+			this.geneticSort(timeout, initSeatingChart);
+
+			console.log("Done with sort");
 			this.emit("change");
 		});
+	}
+
+	geneticSort(timeout, seatingChartSeed) {
+
+		// create new population from seed
+		var population = [];
+		const numNewChildren = 10,
+		numMutations = 1;
+		var highestScore = 0;
+		var mostFit = 0;
+		var score = 0;
+		var startTime = Date.now();
+
+		// loop genetic simulation until timeout
+		while(Date.now() - startTime < timeout) {
+
+			// initialize population
+			population = [];
+			highestScore = 0;
+			mostFit = 0;
+
+			seatingChartSeed.populate(population, numMutations, numNewChildren);
+			for(var i = 0; i < numNewChildren; i++) {
+				score = population[i].calculateScore();
+				if(score > highestScore) {
+					highestScore = score;
+					mostFit = i;
+				}
+			}
+
+			seatingChartSeed = population[mostFit];
+		}
+
+		this.students = seatingChartSeed.getStudents();
+		this.emit("change");
+		console.log("Done with genetic sort");
 	}
 
 	// returns a list of all students
