@@ -49,9 +49,15 @@ class StudentStore extends EventEmitter {
 			this.students = students;
 
 			// start genetic algorithm sort
-			this.geneticSort(timeout, initSeatingChart);
+			initSeatingChart.geneticSort(timeout, (students) => {
+				this.students = students;
 
-			console.log("Done with sort");
+				console.log("Done with genetic sort");
+				this.emit("change");
+			});
+			//this.geneticSort(timeout, initSeatingChart);
+
+			console.log("Done with init sort");
 			this.emit("change");
 		});
 	}
