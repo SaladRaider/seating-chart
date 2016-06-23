@@ -85,13 +85,17 @@ function comparator(a, b) {
 // GENETIC SORT
 
 function geneticSort(students, geneticInfo, timeout) {
+
 	// create new population from seed
 	var population = [];
 	var highestScore = 0;
 	var mostFit = 0;
 	var score = 0;
-	var startTime = Date.now();
+	var now = Date.now();
+	var startTime = now;
 	var seed = [];
+	var updateInterval = 100;
+	var startInterval = now;
 
 	var excludedSeats = [
 		[28],
@@ -125,8 +129,7 @@ function geneticSort(students, geneticInfo, timeout) {
 	console.log("seed",seed);
 
 	// loop genetic simulation until timeout
-	while(Date.now() - startTime < timeout) {
-
+	while(now - startTime < timeout) {
 		// initialize population
 		population = undefined;
 		mostFit = 0;
@@ -142,9 +145,17 @@ function geneticSort(students, geneticInfo, timeout) {
 		}
 
 		seed = population[mostFit];
+
+		if(now > startInterval + updateInterval) {
+			self.postMessage({type: "UPDATE_PROGRESS", progress: (Math.round((Date.now() - startTime) / timeout * 10000) / 100) + "%"});
+			startInterval = now;
+		}
+
+		now = Date.now();
 	}
 
-	self.postMessage({students: seed});
+	self.postMessage({type: "UPDATE_PROGRESS", progress: "100%"});
+	self.postMessage({type: "FINISHED", students: seed});
 }
 
 function populate(students, geneticInfo) {

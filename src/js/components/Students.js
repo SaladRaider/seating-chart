@@ -9,7 +9,10 @@ export default class Students extends React.Component {
 		super();
 
 		this.state = {
-			students: StudentStore.getAll()
+			students: StudentStore.getAll(),
+			progressStyle:  {
+				width: "0%"
+			}
 		};
 
 		this.getStudents = this.getStudents.bind(this);
@@ -25,8 +28,12 @@ export default class Students extends React.Component {
 
 	getStudents() {
 		this.setState({
-			students: StudentStore.getAll()
+			students: StudentStore.getAll(),
+			progressStyle:  {
+				width: StudentStore.getProgress()
+			}
 		});
+		console.log("Updating progress", this.state.progressStyle.width);
 	}
 
 	loadStudents() {
@@ -59,6 +66,14 @@ export default class Students extends React.Component {
 		reader.readAsText(studentFile);
 	}
 
+	setProgress(prog) {
+		this.setState({
+			progressStyle: {
+				width: prog
+			}
+		});
+	}
+
 	sortStudents() {
 		var fileInputPopSize = document.getElementById("pop-size");
 		var fileInputMutPerChild = document.getElementById("mut-per-child");
@@ -69,6 +84,8 @@ export default class Students extends React.Component {
 		var fileInputWeight4 = document.getElementById("weight4");
 		var fileInputWeight5 = document.getElementById("weight5");
 		var fileInputWeight6 = document.getElementById("weight6");
+
+		this.setProgress("0%");
 
 		StudentActions.sortStudents(
 			parseInt(fileInputTimeout.value),
@@ -158,7 +175,6 @@ export default class Students extends React.Component {
 				}
 			}
 		}*/
-		
 
 		return (
 			<div>
@@ -213,13 +229,31 @@ export default class Students extends React.Component {
 				
 				<div class="col-xs-12">
 				<br />
-				<button class="btn btn-success" onClick={this.sortStudents}>Sort Students</button>
-				<button class="btn btn-danger" onClick={this.restoreDefaults}>Restore Defaults</button>
+				<div class="progress">
+				  <div class="progress-bar progress-bar-striped active" role="progressbar"
+				  aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style={this.state.progressStyle}>
+				    {this.state.progressStyle.width}
+				  </div>
+				</div>
+				<button class="btn btn-success" onClick={this.sortStudents.bind(this)}>Sort Students</button>
+				<button class="btn btn-danger" onClick={this.restoreDefaults.bind(this)}>Restore Defaults</button>
 				<hr />
 				</div>
 				<br /><br />
 				<div class="col-xs-12">
-				<table class="table table-bordered table-hover">
+				<div class="table table-bordered table-hover">
+					{StudentSeats}
+				</div>
+
+				</div>
+				</div>
+			</div>
+		);
+	}
+}
+
+/*
+<table class="table table-bordered table-hover">
 					<thead>
 						<tr>
 							<th>Seat</th>
@@ -236,13 +270,4 @@ export default class Students extends React.Component {
 						{StudentComponents}
 					</tbody>
 				</table>
-
-				<div class="table table-bordered table-hover">
-					{StudentSeats}
-				</div>
-				</div>
-				</div>
-			</div>
-		);
-	}
-}
+ */

@@ -6,7 +6,8 @@ import dispatcher from "../dispatcher.js";
 class StudentStore extends EventEmitter {
 	constructor() {
 		super();
-		this.students = [];		
+		this.students = [];	
+		this.progress = "0%";
 	}
 
 	// creates a new student and emmits a change event
@@ -79,7 +80,12 @@ class StudentStore extends EventEmitter {
 
 				console.log("Done with genetic sort");
 				this.emit("change");
-				alert("Done sorting! :D");
+				//alert("Done sorting! :D");
+			},
+			(progress) => {
+				this.progress = progress;
+				this.emit("change");
+				
 			});
 
 			console.log("Done with init sort");
@@ -91,6 +97,10 @@ class StudentStore extends EventEmitter {
 	// returns a list of all students
 	getAll() {
 		return this.students;
+	}
+
+	getProgress() {
+		return this.progress;
 	}
 
 	// handles all actions from the dispatcher
