@@ -2,3 +2,14 @@
 .btn {
 	margin-right: 10px;
 }
+
+.div-td {
+	border-width: 0.5px;
+	border-color: #ddd;
+	border-style: solid;
+	height: 150px;
+}
+
+.div-td:hover {
+	background-color: #eee;
+}

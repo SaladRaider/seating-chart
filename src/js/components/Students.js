@@ -116,6 +116,39 @@ export default class Students extends React.Component {
 			return <Student key={student.id} num={i} {...student} />;
 		});
 
+		var StudentSeats = [];
+		var excludedSeats = [
+			[28],
+			[26, 24],
+			[26, 24, 23],
+			[26, 27, 32, 33]
+		];
+
+		const emptySeats = Math.min(36 - students.length, 4);
+		var j = students.length - 1;
+
+		if(students.length >= 32) {
+			for(var i = 35; i >= 0; i-=1) {
+				if(excludedSeats[emptySeats - 1].indexOf(i) !== -1) {
+					StudentSeats.push(
+						<div key={Math.random() * 100} class="col-xs-2 div-td">
+						</div>
+					);
+				} else {
+					StudentSeats.push(
+						<div key={students[j].id} class="col-xs-2 div-td">
+						<p>{students[j].name}</p>
+						<p>{students[j].gender}</p>
+						<p>{students[j].front}</p>
+						<p>{students[j].testScore}</p>
+						</div>
+					);
+					j-=1;
+				}
+			}
+		}
+		
+
 		return (
 			<div>
 				<div class="form-group col-xs-12">
@@ -192,6 +225,10 @@ export default class Students extends React.Component {
 						{StudentComponents}
 					</tbody>
 				</table>
+
+				<div class="table table-bordered table-hover">
+					{StudentSeats}
+				</div>
 				</div>
 				</div>
 			</div>
