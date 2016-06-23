@@ -51,13 +51,13 @@ export default class SeatingChart {
 				case "FINISHED":  {
 					this.students = e.data.students;
 					console.log("Genetic sort worker finished.");
-					callBack(this.students.splice(0));
+					callBack(this.students.splice(0), e.data.score);
 					worker.terminate();
 					worker = undefined;
 					break;
 				}
 				case "UPDATE_PROGRESS": {
-					updateProgress(e.data.progress);
+					updateProgress(e.data.progress, e.data.students, e.data.score);
 					break;
 				}
 			}

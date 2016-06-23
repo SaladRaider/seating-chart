@@ -147,15 +147,20 @@ function geneticSort(students, geneticInfo, timeout) {
 		seed = population[mostFit];
 
 		if(now > startInterval + updateInterval) {
-			self.postMessage({type: "UPDATE_PROGRESS", progress: (Math.round((Date.now() - startTime) / timeout * 10000) / 100) + "%"});
+			self.postMessage({
+				type: "UPDATE_PROGRESS", 
+				students: seed, 
+				progress: (Math.round((Date.now() - startTime) / timeout * 10000) / 100) + "%", 
+				score: highestScore
+			});
 			startInterval = now;
 		}
 
 		now = Date.now();
 	}
 
-	self.postMessage({type: "UPDATE_PROGRESS", progress: "100%"});
-	self.postMessage({type: "FINISHED", students: seed});
+	self.postMessage({type: "UPDATE_PROGRESS", progress: "100%", score: highestScore});
+	self.postMessage({type: "FINISHED", students: seed, score: highestScore});
 }
 
 function populate(students, geneticInfo) {

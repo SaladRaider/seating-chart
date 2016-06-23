@@ -8,6 +8,7 @@ class StudentStore extends EventEmitter {
 		super();
 		this.students = [];	
 		this.progress = "0%";
+		this.score = 0;
 	}
 
 	// creates a new student and emmits a change event
@@ -75,15 +76,18 @@ class StudentStore extends EventEmitter {
 			};
 
 			// start genetic algorithm sort
-			initSeatingChart.geneticSort(timeout, geneticInfo, (students) => {
+			initSeatingChart.geneticSort(timeout, geneticInfo, (students, score) => {
 				this.students = students;
+				this.score = score
 
 				console.log("Done with genetic sort");
 				this.emit("change");
 				//alert("Done sorting! :D");
 			},
-			(progress) => {
+			(progress, students, score) => {
 				this.progress = progress;
+				this.students = students;
+				this.score = score;
 				this.emit("change");
 				
 			});
@@ -101,6 +105,10 @@ class StudentStore extends EventEmitter {
 
 	getProgress() {
 		return this.progress;
+	}
+
+	getScore() {
+		return this.score;
 	}
 
 	// handles all actions from the dispatcher

@@ -12,7 +12,8 @@ export default class Students extends React.Component {
 			students: StudentStore.getAll(),
 			progressStyle:  {
 				width: "0%"
-			}
+			},
+			score: 0
 		};
 
 		this.getStudents = this.getStudents.bind(this);
@@ -31,7 +32,8 @@ export default class Students extends React.Component {
 			students: StudentStore.getAll(),
 			progressStyle:  {
 				width: StudentStore.getProgress()
-			}
+			},
+			score: StudentStore.getScore()
 		});
 		console.log("Updating progress", this.state.progressStyle.width);
 	}
@@ -129,9 +131,9 @@ export default class Students extends React.Component {
 	render() {
 		const { students } = this.state;
 
-		const StudentComponents = students.map((student, i) => {
+		/*const StudentComponents = students.map((student, i) => {
 			return <Student key={student.id} num={i} {...student} />;
-		});
+		});*/
 
 		var StudentSeats = students.map((student) => {
 			return (
@@ -241,6 +243,7 @@ export default class Students extends React.Component {
 				</div>
 				<br /><br />
 				<div class="col-xs-12">
+				<h3>Seating Chart Score: {this.state.score}</h3>
 				<div class="table table-bordered table-hover">
 					{StudentSeats}
 				</div>
