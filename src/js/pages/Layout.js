@@ -6,9 +6,9 @@ export default withRouter(class Layout extends React.Component {
 		return (
 			<div class="container">
 				<div class="row">
-					<h1>Ms. Kuso's Seating Chart</h1>
-					<Link class="btn btn-success" to="/">Home</Link>
-					<Link class="btn btn-success" to="help">Help</Link>
+					<h1>Ms. Kuso's Seating Chart Generator</h1>
+					<Link class="btn btn-default" to="/">Home</Link>
+					<Link class="btn btn-default" to="help">Help</Link>
 					{this.props.children}
 				</div>
 			</div>

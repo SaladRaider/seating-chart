@@ -48,56 +48,45 @@ class StudentStore extends EventEmitter {
 		initSeatingChart.initSort((students) => {
 			this.students = students;
 
+			// Get test score info to put into genetic info
+			var min = (isNaN(students[0].testScore)) ? 0 : parseInt(students[0].testScore);
+			var max = min;
+			var cmpScore = 0;
+
+			var sl = students.length;
+			for(var i = 1; i < sl; i+=1) {
+				if(isNaN(students[i].testScore))
+					cmpScore = 0;
+				else
+					cmpScore = parseInt(students[i].testScore);
+
+				if(cmpScore < min) {
+					min = cmpScore;
+				} else if (cmpScore > max) {
+					max = cmpScore;
+				}
+			}
+
+			geneticInfo.testScores = {
+				min: min,
+				max: max,
+				median: (min + max) / 2
+			};
+
 			// start genetic algorithm sort
 			initSeatingChart.geneticSort(timeout, geneticInfo, (students) => {
 				this.students = students;
 
 				console.log("Done with genetic sort");
 				this.emit("change");
+				alert("Done sorting! :D");
 			});
-			//this.geneticSort(timeout, initSeatingChart);
 
 			console.log("Done with init sort");
 			this.emit("change");
 		});
 	}
 
-	geneticSort(timeout, seatingChartSeed) {
-
-		// create new population from seed
-		var population = [];
-		const numNewChildren = 100,
-		numMutations = 10;
-		var highestScore = 0;
-		var mostFit = 0;
-		var score = 0;
-		var startTime = Date.now();
-		var seed = seatingChartSeed.getStudents();
-
-		// loop genetic simulation until timeout
-		while(Date.now() - startTime < timeout) {
-
-			// initialize population
-			population = undefined;
-			mostFit = 0;
-
-			population = seatingChartSeed.populate(seed, numMutations, numNewChildren);
-			for(var i = 0; i < numNewChildren; i++) {
-				score = seatingChartSeed.calculateScore(population[i]);
-				if(score > highestScore) {
-					highestScore = score;
-					mostFit = i;
-					console.log("highestScore: " + score);
-				}
-			}
-
-			seed = population[mostFit];
-		}
-
-		this.students = seed;
-		this.emit("change");
-		console.log("Done with genetic sort");
-	}
 
 	// returns a list of all students
 	getAll() {

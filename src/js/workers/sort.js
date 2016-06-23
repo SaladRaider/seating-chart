@@ -5,6 +5,19 @@ function initSort(students, cmp) {
 
 	cmp = cmp || comparator;
 
+	// remove empty seats
+	var tempArray = students.splice(0);
+	students = [];
+
+	var tal = tempArray.length;
+	for(var i = 0; i < tal; i++) {
+		if(tempArray[i].name !== "Empty Seat") {
+			students.push(tempArray[i]);
+		} else {
+			console.log("removed empty seat");
+		}
+	}
+
 	// Use heap sort by test scores
 	var size = students.length, sl = students.length, halfl=Math.floor(sl / 2), temp = new Object;
 	
@@ -78,7 +91,38 @@ function geneticSort(students, geneticInfo, timeout) {
 	var mostFit = 0;
 	var score = 0;
 	var startTime = Date.now();
-	var seed = students;
+	var seed = [];
+
+	var excludedSeats = [
+		[28],
+		[28, 26],
+		[28, 26, 25],
+		[28, 29, 34, 35]
+	];
+
+	const emptySeats = Math.min(36 - students.length, 4);
+
+	var j = 0;
+	for(var i = 0; i < 36; i++) {
+		if(emptySeats > 0)
+		if(excludedSeats[emptySeats - 1].indexOf(i) !== -1) {
+			seed.push({
+				id: Math.random() * 100,
+				name: "Empty Seat", 
+				gender: "", 
+				grade: "",
+				front: "",
+				fourthCol: "",
+				testScore: geneticInfo.testScores.median
+			});
+			continue;
+		}
+
+		seed.push(students[j]);
+		j++;
+	}
+
+	console.log("seed",seed);
 
 	// loop genetic simulation until timeout
 	while(Date.now() - startTime < timeout) {
@@ -129,6 +173,9 @@ function mutate(students, geneticInfo) {
 }
 
 function swapStudent(students, s1, s2) {
+	if(students[s1].name == "Empty Seat" || students[s2].name == "Empty Seat")
+		return;
+
 	var temp = students[s1];
 	students[s1] = students[s2];
 	students[s2] = temp;
@@ -166,27 +213,8 @@ function calculateScore(students, geneticInfo) {
 	}
 
 	// calculate rule 2. score (high score with low score)
-	
-	// find min and max scores
-	var min = (isNaN(students[0].testScore)) ? 0 : parseInt(students[0].testScore);
-	var max = min;
-	var cmpScore = 0;
-
-	for(var i = 1; i < sl; i+=1) {
-		if(isNaN(students[i].testScore))
-			cmpScore = 0;
-		else
-			cmpScore = parseInt(students[i].testScore);
-
-		if(cmpScore < min) {
-			min = cmpScore;
-		} else if (cmpScore > max) {
-			max = cmpScore;
-		}
-	}
-
 	// check neighbors
-	var maxScoreDiff = max - min;
+	var maxScoreDiff = geneticInfo.testScores.max - geneticInfo.testScores.min;
 	var cmpScore2 = 0;
 	for(var i = 0; i + 1 < sl; i+=2) {
 		if(isNaN(students[i].testScore))
@@ -218,7 +246,7 @@ function calculateScore(students, geneticInfo) {
 			else
 				cmpScore = parseInt(students[i].testScore);
 
-			scoreBottomPerc = (maxScoreDiff - (cmpScore - min)) / maxScoreDiff;
+			scoreBottomPerc = (maxScoreDiff - (cmpScore - geneticInfo.testScores.min)) / maxScoreDiff;
 
 			// only score the bottom 40%
 			if(scoreBottomPerc > 0.60) {

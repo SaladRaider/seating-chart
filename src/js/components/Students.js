@@ -116,8 +116,19 @@ export default class Students extends React.Component {
 			return <Student key={student.id} num={i} {...student} />;
 		});
 
-		var StudentSeats = [];
-		var excludedSeats = [
+		var StudentSeats = students.map((student) => {
+			return (
+				<div key={student.id} class="col-xs-2 div-td">
+				<p>{student.name}</p>
+				<p>{student.gender}</p>
+				<p>{student.front}</p>
+				<p>{student.testScore}</p>
+				</div>
+			);
+		});
+		StudentSeats.reverse();
+		//[];
+		/*var excludedSeats = [
 			[28],
 			[26, 24],
 			[26, 24, 23],
@@ -146,7 +157,7 @@ export default class Students extends React.Component {
 					j-=1;
 				}
 			}
-		}
+		}*/
 		
 
 		return (
@@ -154,7 +165,7 @@ export default class Students extends React.Component {
 				<div class="form-group col-xs-12">
 				Student .csv File: <input class="form-control" id="studentFileInput" type="file" /><br />
 				Test Scores .csv File: <input class="form-control" id="testScoreFileInput" type="file" /><br />
-				<button class="btn btn-danger" onClick={this.loadStudents}>Load Students</button><br />
+				<button class="btn btn-success" onClick={this.loadStudents}>Load Students</button><br />
 				<hr />
 				</div>
 
@@ -163,7 +174,7 @@ export default class Students extends React.Component {
 
 				<div class="col-xs-12">
 				<div class="row">
-				<div class="col-xs-12"><h3>Genetic Algorithm Factors:</h3></div>
+				<div class="col-xs-12"><h3>Genetic Algorithm Independent Variables:</h3></div>
 				</div>
 
 				<div class="row">
@@ -202,7 +213,7 @@ export default class Students extends React.Component {
 				
 				<div class="col-xs-12">
 				<br />
-				<button class="btn btn-danger" onClick={this.sortStudents}>Sort Students</button>
+				<button class="btn btn-success" onClick={this.sortStudents}>Sort Students</button>
 				<button class="btn btn-danger" onClick={this.restoreDefaults}>Restore Defaults</button>
 				<hr />
 				</div>
@@ -211,8 +222,8 @@ export default class Students extends React.Component {
 				<table class="table table-bordered table-hover">
 					<thead>
 						<tr>
-							<th>Index</th>
 							<th>Seat</th>
+							<th>ID</th>
 							<th>Name</th>
 							<th>Gender</th>
 							<th>Grade</th>
