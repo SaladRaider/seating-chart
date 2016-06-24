@@ -66,3 +66,10 @@ export function sortStudents(timeout, geneticInfo) {
 }
 
 
+export function download() {
+	console.log("downloading...");
+	dispatcher.dispatch({
+		type: "DOWNLOAD"
+	});
+}
+

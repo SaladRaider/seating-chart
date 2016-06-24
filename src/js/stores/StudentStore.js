@@ -97,6 +97,42 @@ class StudentStore extends EventEmitter {
 		});
 	}
 
+	download() {
+
+		// create and download history.csv
+		var fileStr = "";
+		var { students } = this;
+		var sl = students.length;
+
+		// generate history of everyone who sat next to each other
+		for(var i = 0; i+1 < sl; i+=2) {
+			if(students[i].name == "Empty Seat" || students[i+1].name == "Empty Seat") {
+				continue;
+			}
+
+			fileStr += "\"" + students[i].name + "\",\"" + students[i+1].name + "\",1\n";
+		}
+
+		// create break signal in csv file
+		fileStr += "_END_SEATING_PAIRS_\n";
+
+		// generate history of those who sat in the 4th column
+		for(var i = 2; i < sl; i+=6) {
+			fileStr += "\"" + students[i].name + "\"\n";
+		}
+
+		if(!fileStr.match(/^data:text\/csv/i)) {
+			fileStr = "data:text/csv;charset=utf-8," + fileStr;
+		}
+		fileStr = encodeURI(fileStr);
+
+		var link = document.createElement("a");
+		link.setAttribute('href', fileStr);
+		link.setAttribute('download', 'history.csv');
+		link.click();
+
+	}
+
 
 	// returns a list of all students
 	getAll() {
@@ -124,6 +160,10 @@ class StudentStore extends EventEmitter {
 			}
 			case "SORT_STUDENTS": {
 				this.sortStudents(action.timeout, action.geneticInfo);
+				break;
+			}
+			case "DOWNLOAD": {
+				this.download();
 				break;
 			}
 		}

@@ -128,6 +128,10 @@ export default class Students extends React.Component {
 		fileInputWeight6.value = 10;
 	}
 
+	download() {
+		StudentActions.download();
+	}
+
 	render() {
 		const { students } = this.state;
 
@@ -247,7 +251,10 @@ export default class Students extends React.Component {
 				<div class="table table-bordered table-hover">
 					{StudentSeats}
 				</div>
-
+				</div>
+				<div class="col-xs-12">
+				<br />
+				<button class="btn btn-success" onClick={this.download.bind(this)}>Download</button>
 				</div>
 				</div>
 			</div>
