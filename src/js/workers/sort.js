@@ -91,11 +91,19 @@ function geneticSort(students, geneticInfo, timeout) {
 	var highestScore = 0;
 	var mostFit = 0;
 	var score = 0;
+	var oldScore = 0;
 	var now = Date.now();
 	var startTime = now;
 	var seed = [];
 	var updateInterval = 100;
 	var startInterval = now;
+	var noBetterSolution = 0;
+	var dangerOfConvergence = getDangerOfConvergence(geneticInfo);
+
+	console.log("danger of convergence: ", dangerOfConvergence);
+
+	// convert from s to ms
+	timeout *= 1000;
 
 	var excludedSeats = [
 		[28],
@@ -133,6 +141,7 @@ function geneticSort(students, geneticInfo, timeout) {
 		// initialize population
 		population = undefined;
 		mostFit = 0;
+		oldScore = highestScore;
 
 		population = populate(seed, geneticInfo);
 		for(var i = 0; i < geneticInfo.populationSize; i++) {
@@ -142,6 +151,22 @@ function geneticSort(students, geneticInfo, timeout) {
 				mostFit = i;
 				console.log("highestScore: " + score);
 			}
+		}
+
+		if(oldScore == highestScore) {
+			noBetterSolution++;
+
+			if(noBetterSolution > dangerOfConvergence) {
+				geneticInfo.numMutations++;
+				geneticInfo.populationSize += 10;
+				dangerOfConvergence = getDangerOfConvergence(geneticInfo);
+				console.log("adaptive change: populationSize: ", 
+					geneticInfo.populationSize, ", numMutations: ", 
+					geneticInfo.numMutations, ", dangerOfConvergence: ",
+					dangerOfConvergence);
+			}
+		} else {
+			noBetterSolution = 0;
 		}
 
 		seed = population[mostFit];
@@ -161,6 +186,11 @@ function geneticSort(students, geneticInfo, timeout) {
 
 	self.postMessage({type: "UPDATE_PROGRESS", progress: "100%", score: highestScore});
 	self.postMessage({type: "FINISHED", students: seed, score: highestScore});
+}
+
+function getDangerOfConvergence(geneticInfo) {
+	// (36*35) / populationSize)^numMutations
+	return Math.pow(36*35 / geneticInfo.populationSize, geneticInfo.numMutations);
 }
 
 function populate(students, geneticInfo) {
@@ -217,14 +247,11 @@ function calculateScore(students, geneticInfo) {
 	const weights = geneticInfo.weights; 
 
 	// calculate rule 1. score
-	for(var i = 0; i < 6 && i < sl; i+=1) {
-		if(students[i].front == "true") {
-			score += weights[0];
-		}
-	}
-	for(var i = 6; i < 12 && i < sl; i+=1) {
-		if(students[i].front == "true") {
-			score += weights[0] / 2;
+	for(var j = 0; j < 3; j++) {
+		for(var i = j * 6; i < (j+1)*6 && i < sl; i+=1) {
+			if(students[i].front == "true") {
+				score += weights[0] / (1 + (j / 1000));
+			}
 		}
 	}
 
@@ -275,6 +302,15 @@ function calculateScore(students, geneticInfo) {
 	}
 
 	return score;
+}
+
+var f = [];
+function factorial (n) {
+  if (n == 0 || n == 1)
+    return 1;
+  if (f[n] > 0)
+    return f[n];
+  return f[n] = factorial(n-1) * n;
 }
 
 self.onmessage = function(e) {

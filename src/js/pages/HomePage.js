@@ -6,7 +6,7 @@ export default class HomePage extends React.Component {
 		return (
 			<div class="row">
 				<div class="col-xs-12">
-					<h1>Home Page</h1>
+					<h1>Generator Page</h1>
 				</div>
 				<Students />
 			</div>
