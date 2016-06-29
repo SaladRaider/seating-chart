@@ -281,24 +281,32 @@ function calculateScore(students, seatingPartners, geneticInfo) {
 	}
 
 	// calculate rule 4. score (sit next to new people)
+	var index, samePartner = false;
 	for(var i = 0; i + 1 < sl; i+=2) {
-		var index = seatingPartners.firstSeats.indexOf(students[i].name);
+		samePartner = false;
+		index = seatingPartners.firstSeats.indexOf(students[i].name);
 		
 		while(index !== -1) {
 
 			if(seatingPartners.secondSeats[index] == students[i+1].name) {
 				score -= weights[3] * seatingPartners.numInstances[index];
+				samePartner = true;
+				break;
 				//console.log("sitting next to each other: ", seatingPartners.firstSeats[index], " & ", seatingPartners.secondSeats[index]);
 			}
 
 			index = seatingPartners.firstSeats.indexOf(students[i].name, index + 1);
 		}
 
+		if(samePartner)
+			continue;
+
 		index = seatingPartners.secondSeats.indexOf(students[i].name);
 		while(index !== -1) {
 
 			if(seatingPartners.firstSeats[index] == students[i+1].name) {
 				score -= weights[3] * seatingPartners.numInstances[index];
+				break;
 				//console.log("sitting next to each other: ", seatingPartners.firstSeats[index], " & ", seatingPartners.secondSeats[index]);
 			}
 

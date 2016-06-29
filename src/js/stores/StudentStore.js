@@ -105,8 +105,9 @@ class StudentStore extends EventEmitter {
 
 		// create and download history.csv
 		var fileStr = "";
-		var { students } = this;
-		var sl = students.length;
+		var { students, seatingPartners } = this;
+		var sl = students.length, spl = seatingPartners.firstSeats.length;
+		var index, samePartner = false;
 
 		// generate history of everyone who sat next to each other
 		for(var i = 0; i+1 < sl; i+=2) {
@@ -114,7 +115,43 @@ class StudentStore extends EventEmitter {
 				continue;
 			}
 
+			samePartner = false;
+			index = seatingPartners.firstSeats.indexOf(students[i].name);
+		
+			while(index !== -1) {
+				if(seatingPartners.secondSeats[index] == students[i+1].name) {
+					seatingPartners.numInstances[index]++;
+					samePartner = true;
+					console.log("same partner: ", seatingPartners.firstSeats[index], " & ", seatingPartners.secondSeats[index]);
+					break;
+				}
+
+				index = seatingPartners.firstSeats.indexOf(students[i].name, index + 1);
+			}
+
+			if(samePartner)
+				continue;
+
+			index = seatingPartners.secondSeats.indexOf(students[i].name);
+			while(index !== -1) {
+				if(seatingPartners.firstSeats[index] == students[i+1].name) {
+					seatingPartners.numInstances[index]++;
+					samePartner = true;
+					console.log("same partner: ", seatingPartners.firstSeats[index], " & ", seatingPartners.secondSeats[index]);
+					break;
+				}
+
+				index = seatingPartners.secondSeats.indexOf(students[i].name, index + 1);
+			}
+
+			if(samePartner)
+				continue;
+
 			fileStr += "\"" + students[i].name + "\",\"" + students[i+1].name + "\",1\n";
+		}
+
+		for(var i = 0; i < spl; i++) {
+			fileStr += "\"" + seatingPartners.firstSeats[i] + "\",\"" + seatingPartners.secondSeats[i] + "\"," + seatingPartners.numInstances[i] + "\n";
 		}
 
 		// create break signal in csv file
@@ -122,7 +159,14 @@ class StudentStore extends EventEmitter {
 
 		// generate history of those who sat in the 4th column
 		for(var i = 2; i < sl; i+=6) {
-			fileStr += "\"" + students[i].name + "\"\n";
+			if(students[i].fourthCol !== "true")
+				fileStr += "\"" + students[i].name + "\"\n";
+		}
+
+		for(var i = 0; i < sl; i++) {
+			if(students[i].fourthCol == "true") {
+				fileStr += "\"" + students[i].name + "\"\n";
+			}
 		}
 
 		if(!fileStr.match(/^data:text\/csv/i)) {

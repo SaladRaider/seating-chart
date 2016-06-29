@@ -68,10 +68,11 @@ export function loadStudents(studentTextBlob, testScoreTextBlob, historyBlob) {
 		var spl = seatingPartnersArr.length;
 		for(var i = 0; i < spl; i++) {
 			seatingPartnersArr[i] = seatingPartnersArr[i].split(",").map((sp) => { return sp.trim().replace("\"", ""); });
-			if(seatingPartnersArr.length >= 5)
-			seatingPartners.firstSeats.push(seatingPartnersArr[i][0] + ", " + seatingPartnersArr[i][1]);
-			seatingPartners.secondSeats.push(seatingPartnersArr[i][2] + ", " + seatingPartnersArr[i][3]);
-			seatingPartners.numInstances.push(parseInt(seatingPartnersArr[i][4]));
+			if(seatingPartnersArr[i].length >= 5) {
+				seatingPartners.firstSeats.push(seatingPartnersArr[i][0] + ", " + seatingPartnersArr[i][1]);
+				seatingPartners.secondSeats.push(seatingPartnersArr[i][2] + ", " + seatingPartnersArr[i][3]);
+				seatingPartners.numInstances.push(parseInt(seatingPartnersArr[i][4]));
+			}
 		}
 
 		var fIndex = 0;

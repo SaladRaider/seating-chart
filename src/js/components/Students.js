@@ -138,12 +138,12 @@ export default class Students extends React.Component {
 		fileInputPopSize.value = 40;
 		fileInputMutPerChild.value = 1;
 		fileInputTimeout.value = 20;
-		fileInputWeight1.value = 40000;
-		fileInputWeight2.value = 20000;
-		fileInputWeight3.value = 1000;
-		fileInputWeight4.value = 10000;
-		fileInputWeight5.value = 1000;
-		fileInputWeight6.value = 10;
+		fileInputWeight1.value = 400;
+		fileInputWeight2.value = 200;
+		fileInputWeight3.value = 100;
+		fileInputWeight4.value = 100;
+		fileInputWeight5.value = 10;
+		fileInputWeight6.value = 1;
 	}
 
 	download() {
@@ -244,21 +244,21 @@ export default class Students extends React.Component {
 
 				<div class="row">
 				<div class="col-xs-2"><label type="number" class="control-label">Request by student to sit in front</label></div>
-				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="40000" id="weight1" /></div>
+				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="400" id="weight1" /></div>
 				<div class="col-xs-2"><label type="number" class="control-label">High w/ low score</label></div>
-				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="20000" id="weight2" /></div>
+				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="200" id="weight2" /></div>
 				<div class="col-xs-2"><label type="number" class="control-label">Boy/Girl alternating</label></div>
-				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="10000" id="weight3" /></div>
+				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="100" id="weight3" /></div>
 				<br /><br />
 				</div>
 
 				<div class="row">
 				<div class="col-xs-2"><label type="number" class="control-label">Sitting w/ new people</label></div>
-				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="10000" id="weight4" /></div>
+				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="100" id="weight4" /></div>
 				<div class="col-xs-2"><label type="number" class="control-label">Low scores in front</label></div>
-				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="1000" id="weight5" /></div>
+				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="10" id="weight5" /></div>
 				<div class="col-xs-2"><label type="number" class="control-label">Don't sit in col 4 again</label></div>
-				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="10" id="weight6" /></div>
+				<div class="col-xs-2"><input type="number" class="form-control" defaultValue="1" id="weight6" /></div>
 				</div>
 				</div>
 				
