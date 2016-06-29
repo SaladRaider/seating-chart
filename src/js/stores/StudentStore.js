@@ -7,6 +7,8 @@ class StudentStore extends EventEmitter {
 	constructor() {
 		super();
 		this.students = [];	
+		this.seatingPartners = [];
+		this.newSeatingPartners = [];
 		this.progress = "0%";
 		this.score = 0;
 	}
@@ -18,12 +20,14 @@ class StudentStore extends EventEmitter {
 	}
 
 	// loads new students and emits a hange event
-	loadStudents(students) {
+	loadStudents(students, seatingPartners) {
 		this.students = [];
 		var sl = students.length;
 		for(var i = 0; i < sl; i++) {
 			this.makeStudent(students[i]);
 		}
+		this.seatingPartners = seatingPartners.splice(0);
+		console.log("Loaded history. SeatingPartners: ", this.seatingPartners, "; FourthCols: ", this.fourthCols);
 		this.emit("change");
 	}
 
@@ -76,7 +80,7 @@ class StudentStore extends EventEmitter {
 			};
 
 			// start genetic algorithm sort
-			initSeatingChart.geneticSort(timeout, geneticInfo, (students, score) => {
+			initSeatingChart.geneticSort(timeout, this.seatingPartners, geneticInfo, (students, score) => {
 				this.students = students;
 				this.score = score
 
@@ -155,7 +159,7 @@ class StudentStore extends EventEmitter {
 				break;
 			}
 			case "LOAD_STUDENTS": {
-				this.loadStudents(action.students);
+				this.loadStudents(action.students, action.seatingPartners);
 				break;
 			}
 			case "SORT_STUDENTS": {

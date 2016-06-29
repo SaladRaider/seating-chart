@@ -84,7 +84,7 @@ function comparator(a, b) {
 
 // GENETIC SORT
 
-function geneticSort(students, geneticInfo, timeout) {
+function geneticSort(students, seatingPartners, geneticInfo, timeout) {
 
 	// create new population from seed
 	var population = [];
@@ -145,7 +145,7 @@ function geneticSort(students, geneticInfo, timeout) {
 
 		population = populate(seed, geneticInfo);
 		for(var i = 0; i < geneticInfo.populationSize; i++) {
-			score = calculateScore(population[i], geneticInfo);
+			score = calculateScore(population[i], seatingPartners, geneticInfo);
 			if(score > highestScore) {
 				highestScore = score;
 				mostFit = i;
@@ -227,7 +227,7 @@ function swapStudent(students, s1, s2) {
 	students[s2] = temp;
 }
 
-function calculateScore(students, geneticInfo) {
+function calculateScore(students, seatingPartners, geneticInfo) {
 
 	var sl = students.length;
 	if(students[0] == undefined)
@@ -280,6 +280,9 @@ function calculateScore(students, geneticInfo) {
 		}
 	}
 
+	// calculate rule 4. score (sit next to new people)
+	
+
 	// calculate rule 5. score (low scores sit in front)
 	var scoreBottomPerc;
 	for(var j = 0; j * 6 < sl; j+=1) {
@@ -298,6 +301,13 @@ function calculateScore(students, geneticInfo) {
 				else
 					score -= (Math.pow(scoreBottomPerc, 2) * weights[4] / (6 - j));
 			}
+		}
+	}
+
+	// calculate rule 6. score (not sitting in 4th column twice)
+	for(var i = 2; i < sl; i+=6) {
+		if(students[i].fourthCol == "true") {
+			score -= weights[5];
 		}
 	}
 
@@ -320,7 +330,7 @@ self.onmessage = function(e) {
 			break;
 		}
 		case "GENETIC_SORT": {
-			geneticSort(e.data.students, e.data.geneticInfo, e.data.timeout);
+			geneticSort(e.data.students, e.data.seatingPartners, e.data.geneticInfo, e.data.timeout);
 			break;
 		}
 	}

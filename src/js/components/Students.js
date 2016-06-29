@@ -41,24 +41,42 @@ export default class Students extends React.Component {
 	loadStudents() {
 		var studentFileInput = document.getElementById("studentFileInput");
 		var testScoreFileInput = document.getElementById("testScoreFileInput");
-		
+		var historyFileInput = document.getElementById("historyFileInput");
+
 		if(studentFileInput.value.length <= 0 || testScoreFileInput.value.length <= 0) {
+			console.log("Required files are missing.");
 			return;
 		}
 
 		var studentFile = studentFileInput.files[0];
 		var testScoreFile = testScoreFileInput.files[0];
+		var historyFile = (historyFileInput.files[0] != null) ? historyFileInput.files[0] : "";
 		var studentBlob = "";
 		var testScoreBlob = "";
+		var historyBlob = "";
 
 		var reader = new FileReader();
+
 		reader.onloadend = function(evt) {
 			if(evt.target.readyState == FileReader.DONE) {
 				studentBlob = evt.target.result;
 				reader.onloadend = function(evt) {
 					if(evt.target.readyState == FileReader.DONE) {
 						testScoreBlob = evt.target.result;
-						StudentActions.loadStudents(studentBlob, testScoreBlob);
+
+						if(historyFile !== "") {
+							console.log("Reading history file");
+							reader.onloadend = function(evt) {
+								if(evt.target.readyState == FileReader.DONE) {
+									historyBlob = evt.target.result;
+									
+									StudentActions.loadStudents(studentBlob, testScoreBlob, historyBlob);
+								}
+							}
+							reader.readAsText(historyFile);
+						} else {
+							StudentActions.loadStudents(studentBlob, testScoreBlob, historyBlob);
+						}
 					}
 				}
 				reader.readAsText(testScoreFile);
@@ -140,14 +158,24 @@ export default class Students extends React.Component {
 		});*/
 
 		var StudentSeats = students.map((student) => {
-			return (
-				<div key={student.id} class="col-xs-2 div-td">
-				<p>{student.name}</p>
-				<p>{student.gender}</p>
-				<p>{student.front}</p>
-				<p>{student.testScore}</p>
-				</div>
-			);
+			if(student.fourthCol == "true") {
+				return (
+					<div key={student.id} class="col-xs-2 div-td" style={{borderColor: "#f00"}}>
+					{ (student.front == "true") ? (<p><b>{student.name}</b></p>) : (<p>{student.name}</p>) }
+					<p>{student.gender}</p>
+					<p>{student.testScore}</p>
+					</div>
+				);
+			} else {
+				return (
+					<div key={student.id} class="col-xs-2 div-td">
+					{ (student.front == "true") ? (<p><b>{student.name}</b></p>) : (<p>{student.name}</p>) }
+					<p>{student.gender}</p>
+					<p>{student.testScore}</p>
+					</div>
+				);
+			}
+			
 		});
 		StudentSeats.reverse();
 		//[];
@@ -187,6 +215,7 @@ export default class Students extends React.Component {
 				<div class="form-group col-xs-12">
 				Student .csv File: <input class="form-control" id="studentFileInput" type="file" /><br />
 				Test Scores .csv File: <input class="form-control" id="testScoreFileInput" type="file" /><br />
+				History .csv File: <input class="form-control" id="historyFileInput" type="file" /><br />
 				<button class="btn btn-success" onClick={this.loadStudents}>Load Students</button><br />
 				<hr />
 				</div>
