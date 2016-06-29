@@ -73,7 +73,7 @@ export default class SeatingChart {
 		worker.postMessage({
 			cmd: "GENETIC_SORT", 
 			students: this.students.splice(0), 
-			seatingPartners: seatingPartners.splice(0),
+			seatingPartners: seatingPartners,
 			geneticInfo: geneticInfo,
 			timeout: timeout
 		});

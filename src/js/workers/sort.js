@@ -281,7 +281,30 @@ function calculateScore(students, seatingPartners, geneticInfo) {
 	}
 
 	// calculate rule 4. score (sit next to new people)
-	
+	for(var i = 0; i + 1 < sl; i+=2) {
+		var index = seatingPartners.firstSeats.indexOf(students[i].name);
+		
+		while(index !== -1) {
+
+			if(seatingPartners.secondSeats[index] == students[i+1].name) {
+				score -= weights[3] * seatingPartners.numInstances[index];
+				//console.log("sitting next to each other: ", seatingPartners.firstSeats[index], " & ", seatingPartners.secondSeats[index]);
+			}
+
+			index = seatingPartners.firstSeats.indexOf(students[i].name, index + 1);
+		}
+
+		index = seatingPartners.secondSeats.indexOf(students[i].name);
+		while(index !== -1) {
+
+			if(seatingPartners.firstSeats[index] == students[i+1].name) {
+				score -= weights[3] * seatingPartners.numInstances[index];
+				//console.log("sitting next to each other: ", seatingPartners.firstSeats[index], " & ", seatingPartners.secondSeats[index]);
+			}
+
+			index = seatingPartners.secondSeats.indexOf(students[i].name, index + 1);
+		}
+	}
 
 	// calculate rule 5. score (low scores sit in front)
 	var scoreBottomPerc;

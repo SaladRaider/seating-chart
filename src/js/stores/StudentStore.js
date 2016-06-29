@@ -26,7 +26,7 @@ class StudentStore extends EventEmitter {
 		for(var i = 0; i < sl; i++) {
 			this.makeStudent(students[i]);
 		}
-		this.seatingPartners = seatingPartners.splice(0);
+		this.seatingPartners = seatingPartners;
 		console.log("Loaded history. SeatingPartners: ", this.seatingPartners, "; FourthCols: ", this.fourthCols);
 		this.emit("change");
 	}

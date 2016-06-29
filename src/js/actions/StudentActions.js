@@ -32,7 +32,12 @@ export function loadStudents(studentTextBlob, testScoreTextBlob, historyBlob) {
 	var testScoreTextLines = testScoreTextBlob.split("\n");
 	
 	var students = [];
-	var seatingPartners = [];
+	var seatingPartners = {
+		firstSeats: [],
+		secondSeats: [],
+		numInstances: []
+	};
+	var seatingPartnersArr = [];
 	var fourthCols = [];
 
 	var sll = studentTextLines.length;
@@ -53,18 +58,20 @@ export function loadStudents(studentTextBlob, testScoreTextBlob, historyBlob) {
 		}
 	}
 
-
-
 	if(historyBlob.length > 0) {
 		var historyTextLines = historyBlob.split("_END_SEATING_PAIRS_");
-		seatingPartners = historyTextLines[0].split("\n");
+		seatingPartnersArr = historyTextLines[0].split("\n");
 		fourthCols = historyTextLines[1].split("\n").map((fc) => {
 			return fc.replace("\"", "").replace("\"", "");//.replace("  ", " ");
 		});
 
-		var spl = seatingPartners.length;
+		var spl = seatingPartnersArr.length;
 		for(var i = 0; i < spl; i++) {
-			seatingPartners[i] = seatingPartners[i].split(",").map((sp) => { return sp.trim().replace("\"", ""); });
+			seatingPartnersArr[i] = seatingPartnersArr[i].split(",").map((sp) => { return sp.trim().replace("\"", ""); });
+			if(seatingPartnersArr.length >= 5)
+			seatingPartners.firstSeats.push(seatingPartnersArr[i][0] + ", " + seatingPartnersArr[i][1]);
+			seatingPartners.secondSeats.push(seatingPartnersArr[i][2] + ", " + seatingPartnersArr[i][3]);
+			seatingPartners.numInstances.push(parseInt(seatingPartnersArr[i][4]));
 		}
 
 		var fIndex = 0;
