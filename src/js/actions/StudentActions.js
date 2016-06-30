@@ -110,3 +110,10 @@ export function download() {
 	});
 }
 
+export function exportXLS() {
+	console.log("exporting xls...");
+	dispatcher.dispatch({
+		type: "EXPORT_XLS"
+	});
+}
+

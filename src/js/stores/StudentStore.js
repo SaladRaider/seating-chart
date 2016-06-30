@@ -8,7 +8,6 @@ class StudentStore extends EventEmitter {
 		super();
 		this.students = [];	
 		this.seatingPartners = [];
-		this.newSeatingPartners = [];
 		this.progress = "0%";
 		this.score = 0;
 	}
@@ -174,13 +173,38 @@ class StudentStore extends EventEmitter {
 		}
 		fileStr = encodeURI(fileStr);
 
+		var currentDate = new Date();
+
 		var link = document.createElement("a");
 		link.setAttribute('href', fileStr);
-		link.setAttribute('download', 'history.csv');
+		link.setAttribute('download', 'history' + currentDate.getFullYear() + "_" + currentDate.getMonth() + "_" + currentDate.getDate() + "_" + currentDate.getHours() + "_" + currentDate.getMinutes() + '.csv');
 		link.click();
 
 	}
 
+	exportXLS() {
+		var { students } = this;
+		var letters = ["F", "E", "D", "C", "B", "A"];
+		var StudentsXLS = "\tCol 1\tCol 2\tCol 3\tCol 4\tCol 5\tCol 6";
+		var sl = students.length;
+		var studentsRev = students.reverse();
+		for(var i = 0; i < sl; i++) {
+			if(i % 6 == 0) {
+				StudentsXLS += "\r\n"+letters[Math.round(i/6)];
+			}
+			StudentsXLS += "\t"+studentsRev[i].name;
+		}
+		if(!StudentsXLS.match(/^data:text\/vnd.ms-excel/i)) {
+			StudentsXLS = "data:application/vnd.ms-excel;charset=utf-8," + StudentsXLS;
+		}
+		StudentsXLS = encodeURI(StudentsXLS);
+
+		var currentDate = new Date();
+		var link = document.createElement("a");
+		link.setAttribute('href', StudentsXLS);
+		link.setAttribute('download', 'seatingChart' + currentDate.getFullYear() + "_" + currentDate.getMonth() + "_" + currentDate.getDate() + "_" + currentDate.getHours() + "_" + currentDate.getMinutes() + '.xls');
+		link.click();
+	}
 
 	// returns a list of all students
 	getAll() {
@@ -212,6 +236,10 @@ class StudentStore extends EventEmitter {
 			}
 			case "DOWNLOAD": {
 				this.download();
+				break;
+			}
+			case "EXPORT_XLS": {
+				this.exportXLS();
 				break;
 			}
 		}

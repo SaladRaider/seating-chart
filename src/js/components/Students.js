@@ -4,6 +4,9 @@ import Student from "./Student.js";
 import * as StudentActions from "../actions/StudentActions.js";
 import StudentStore from "../stores/StudentStore.js";
 
+import $ from "jquery";
+
+
 export default class Students extends React.Component {
 	constructor() {
 		super();
@@ -35,6 +38,8 @@ export default class Students extends React.Component {
 			},
 			score: StudentStore.getScore()
 		});
+		//generateTableDownload();
+		//$("table").tableExport();
 		console.log("Updating progress", this.state.progressStyle.width);
 	}
 
@@ -150,34 +155,52 @@ export default class Students extends React.Component {
 		StudentActions.download();
 	}
 
+	exportXLS() {
+		StudentActions.exportXLS();
+	}
+
 	render() {
 		const { students } = this.state;
-
-		/*const StudentComponents = students.map((student, i) => {
-			return <Student key={student.id} num={i} {...student} />;
-		});*/
 
 		var StudentSeats = students.map((student) => {
 			if(student.fourthCol == "true") {
 				return (
-					<div key={student.id} class="col-xs-2 div-td" style={{borderColor: "#f00"}}>
+					<td key={student.id} class="col-xs-2 div-td" style={{backgroundColor: "#f88"}}>
 					{ (student.front == "true") ? (<p><b>{student.name}</b></p>) : (<p>{student.name}</p>) }
 					<p>{student.gender}</p>
 					<p>{student.testScore}</p>
-					</div>
+					</td>
 				);
 			} else {
 				return (
-					<div key={student.id} class="col-xs-2 div-td">
+					<td key={student.id} class="col-xs-2 div-td">
 					{ (student.front == "true") ? (<p><b>{student.name}</b></p>) : (<p>{student.name}</p>) }
 					<p>{student.gender}</p>
 					<p>{student.testScore}</p>
-					</div>
+					</td>
 				);
 			}
-			
 		});
+
 		StudentSeats.reverse();
+
+		var StudentRows = [];
+
+		var ssl = StudentSeats.length;
+		var cols;
+		var letters = ["F", "E", "D", "C", "B", "A"];
+		for(var j = 0; j * 6 < ssl; j++) {
+
+			cols = [<td key={Math.random()*1000}>{letters[j]}</td>];
+			for(var i = j*6; i < (j+1) * 6 && i < ssl; i++) {
+				cols.push(StudentSeats[i]);
+			}
+
+			StudentRows.push(
+				<tr key={Math.random()*1000}>{cols}</tr>
+			);
+		}
+
 		//[];
 		/*var excludedSeats = [
 			[28],
@@ -277,36 +300,28 @@ export default class Students extends React.Component {
 				<br /><br />
 				<div class="col-xs-12">
 				<h3>Seating Chart Score: {this.state.score}</h3>
-				<div class="table table-bordered table-hover">
-					{StudentSeats}
-				</div>
-				</div>
-				<div class="col-xs-12">
-				<br />
-				<button class="btn btn-success" onClick={this.download.bind(this)}>Download</button>
+				<button class="btn btn-default csv" onClick={this.download.bind(this)}>Export History</button>
+				<button class="btn btn-default xls" onClick={this.exportXLS.bind(this)}>Export Table</button>
+				<br /><br />
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Col 1</th>
+							<th>Col 2</th>
+							<th>Col 3</th>
+							<th>Col 4</th>
+							<th>Col 5</th>
+							<th>Col 6</th>
+						</tr>
+					</thead>
+					<tbody>
+						{StudentRows}
+					</tbody>
+				</table>
 				</div>
 				</div>
 			</div>
 		);
 	}
 }
-
-/*
-<table class="table table-bordered table-hover">
-					<thead>
-						<tr>
-							<th>Seat</th>
-							<th>ID</th>
-							<th>Name</th>
-							<th>Gender</th>
-							<th>Grade</th>
-							<th>Front?</th>
-							<th>4th Column?</th>
-							<th>Test Score</th>
-						</tr>
-					</thead>
-					<tbody>
-						{StudentComponents}
-					</tbody>
-				</table>
- */
