@@ -156,7 +156,11 @@ export default class Students extends React.Component {
 	}
 
 	exportXLS() {
-		StudentActions.exportXLS();
+		StudentActions.exportXLS(false);
+	}
+
+	exportXLS_N() {
+		StudentActions.exportXLS(true);
 	}
 
 	render() {
@@ -302,6 +306,7 @@ export default class Students extends React.Component {
 				<h3>Seating Chart Score: {this.state.score}</h3>
 				<button class="btn btn-default csv" onClick={this.download.bind(this)}>Export History</button>
 				<button class="btn btn-default xls" onClick={this.exportXLS.bind(this)}>Export Table</button>
+				<button class="btn btn-default xls" onClick={this.exportXLS_N.bind(this)}>Export Table (Nick Names Only)</button>
 				<br /><br />
 				<table class="table table-bordered table-hover">
 					<thead>

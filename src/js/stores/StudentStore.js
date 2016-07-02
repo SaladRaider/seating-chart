@@ -182,17 +182,38 @@ class StudentStore extends EventEmitter {
 
 	}
 
-	exportXLS() {
+	exportXLS(nickNamesOnly) {
 		var { students } = this;
 		var letters = ["F", "E", "D", "C", "B", "A"];
 		var StudentsXLS = "\tCol 1\tCol 2\tCol 3\tCol 4\tCol 5\tCol 6";
 		var sl = students.length;
-		var studentsRev = students.reverse();
+		var studentsRev = students.slice(0).reverse();
+		var firstName = "";
+		var lastName = "";
+		var parenPos = -1;
+		var commaPos = -1;
 		for(var i = 0; i < sl; i++) {
 			if(i % 6 == 0) {
 				StudentsXLS += "\r\n"+letters[Math.round(i/6)];
 			}
-			StudentsXLS += "\t"+studentsRev[i].name;
+
+			if(nickNamesOnly) {
+				parenPos = studentsRev[i].name.indexOf("(");
+				commaPos = studentsRev[i].name.indexOf(",");
+				if(parenPos !== -1) {
+					firstName = studentsRev[i].name.substring(parenPos + 1, studentsRev[i].name.length - 1);
+					lastName = studentsRev[i].name.substring(0, commaPos);
+				} else {
+					firstName = studentsRev[i].name.substring(commaPos + 1, studentsRev[i].name.length);
+					lastName = studentsRev[i].name.substring(0, commaPos);
+				}
+			} else {
+				commaPos = studentsRev[i].name.indexOf(",");
+				firstName = studentsRev[i].name.substring(commaPos + 1, studentsRev[i].name.length);
+				lastName = studentsRev[i].name.substring(0, commaPos);
+			}
+
+			StudentsXLS += "\t"+firstName + " " + lastName;
 		}
 		if(!StudentsXLS.match(/^data:text\/vnd.ms-excel/i)) {
 			StudentsXLS = "data:application/vnd.ms-excel;charset=utf-8," + StudentsXLS;
@@ -239,7 +260,7 @@ class StudentStore extends EventEmitter {
 				break;
 			}
 			case "EXPORT_XLS": {
-				this.exportXLS();
+				this.exportXLS(action.nickNamesOnly);
 				break;
 			}
 		}

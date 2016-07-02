@@ -110,10 +110,11 @@ export function download() {
 	});
 }
 
-export function exportXLS() {
+export function exportXLS(nickNamesOnly) {
 	console.log("exporting xls...");
 	dispatcher.dispatch({
-		type: "EXPORT_XLS"
+		type: "EXPORT_XLS",
+		nickNamesOnly: nickNamesOnly
 	});
 }
 
