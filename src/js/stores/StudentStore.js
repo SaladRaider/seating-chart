@@ -187,11 +187,17 @@ class StudentStore extends EventEmitter {
 		var letters = ["F", "E", "D", "C", "B", "A"];
 		var StudentsXLS = "\tCol 1\tCol 2\tCol 3\tCol 4\tCol 5\tCol 6";
 		var sl = students.length;
-		var studentsRev = students.slice(0).reverse();
+		var studentsRev = students.slice(0);
 		var firstName = "";
 		var lastName = "";
 		var parenPos = -1;
 		var commaPos = -1;
+		if(!nickNamesOnly) {
+			studentsRev.reverse();
+		} else {
+			StudentsXLS = "\tCol 6\tCol 5\tCol 4\tCol 3\tCol 2\tCol 1";
+			letters.reverse();
+		}
 		for(var i = 0; i < sl; i++) {
 			if(i % 6 == 0) {
 				StudentsXLS += "\r\n"+letters[Math.round(i/6)];
