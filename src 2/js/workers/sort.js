@@ -106,18 +106,13 @@ function geneticSort(students, seatingPartners, geneticInfo, timeout) {
 	timeout *= 1000;
 
 	var excludedSeats = [
-		[28], 					// 35
-		[28, 26],				// 34
-		[28, 26, 25],			// 33
-		[28, 29, 34, 35],		// 32
-		[28, 29, 34, 35, 26],
-		[28, 29, 34, 35, 26, 25],
-		[28, 29, 34, 35, 26, 25, 10],
-		[28, 29, 34, 35, 27, 26, 33, 32],
-		[28, 29, 34, 35, 27, 26, 33, 32, 7]
+		[28],
+		[28, 26],
+		[28, 26, 25],
+		[28, 29, 34, 35]
 	];
 
-	const emptySeats = Math.min(36 - students.length, excludedSeats.length + 1);
+	const emptySeats = Math.min(36 - students.length, 4);
 
 	var j = 0;
 	for(var i = 0; i < 36; i++) {
